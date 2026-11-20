@@ -1,0 +1,16 @@
+{
+  "name": "agentdesk",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "preview": "pnpm --filter web preview",
+    "dev:chat": "pnpm --filter @agentdesk/agentdesk-chat dev",
+    "dev:admin": "pnpm --filter @agentdesk/agentdesk-admin dev",
+    "format": "prettier --write \"packages/**/*.{js,css,html,json}\""
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=9.0.0"
+  }
+}

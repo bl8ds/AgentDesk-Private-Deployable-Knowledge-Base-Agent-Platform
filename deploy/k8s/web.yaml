@@ -1,0 +1,120 @@
+# Static frontends (nginx). Build images from apps/web-admin and apps/web-chat Dockerfiles.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-admin
+  namespace: agentdesk
+  labels:
+    app: web-admin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-admin
+  template:
+    metadata:
+      labels:
+        app: web-admin
+    spec:
+      containers:
+        - name: web-admin
+          image: agentdesk-web-admin:local
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-admin
+  namespace: agentdesk
+spec:
+  type: ClusterIP
+  selector:
+    app: web-admin
+  ports:
+    - port: 80
+      targetPort: http
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: web-admin
+  namespace: agentdesk
+  annotations:
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.certresolver: letsencrypt
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: agentdesk-admin.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web-admin
+                port:
+                  number: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-chat
+  namespace: agentdesk
+  labels:
+    app: web-chat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-chat
+  template:
+    metadata:
+      labels:
+        app: web-chat
+    spec:
+      containers:
+        - name: web-chat
+          image: agentdesk-web-chat:local
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-chat
+  namespace: agentdesk
+spec:
+  type: ClusterIP
+  selector:
+    app: web-chat
+  ports:
+    - port: 80
+      targetPort: http
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: web-chat
+  namespace: agentdesk
+  annotations:
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.certresolver: letsencrypt
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: agentdesk-chat.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web-chat
+                port:
+                  number: 80

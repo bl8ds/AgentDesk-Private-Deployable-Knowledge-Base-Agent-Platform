@@ -1,0 +1,5 @@
+DROP TABLE IF EXISTS audit_logs;
+DROP TABLE IF EXISTS document_chunks;
+DROP TABLE IF EXISTS documents;
+DROP TABLE IF EXISTS app_codes;
+DROP TABLE IF EXISTS sessions;

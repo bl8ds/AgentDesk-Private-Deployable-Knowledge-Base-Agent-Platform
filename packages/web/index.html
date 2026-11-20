@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- 标题/描述统一在 src/config.js 维护，此处为静态回退值 -->
+    <meta
+      name="description"
+      content="AgentDesk · 企业私有化 RAG 知识库与智能体交付平台"
+    />
+    <title>AgentDesk · 私有化知识库 Agent 平台</title>
+    <script>
+      (function() {
+        var theme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=10" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="app"></div>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <script>
+      window.mermaid.initialize({
+        startOnLoad: false,
+        theme: 'dark',
+        themeVariables: {
+          darkMode: true,
+          background: '#0a0a0b',
+          primaryColor: '#5e6ad2',
+          primaryBorderColor: '#8b5cf6',
+          primaryTextColor: '#ffffff',
+          lineColor: '#a1a1aa',
+          textColor: '#ffffff',
+          actorBorder: '#5e6ad2',
+          actorBkg: 'rgba(255,255,255,0.03)',
+          actorTextColor: '#ffffff',
+          actorLineColor: 'rgba(255,255,255,0.1)',
+          signalColor: '#a1a1aa',
+          signalTextColor: '#ffffff',
+          labelBoxBkgColor: 'rgba(255,255,255,0.04)',
+          labelBoxBorderColor: 'rgba(255,255,255,0.1)',
+          labelTextColor: '#a1a1aa',
+          loopTextColor: '#a1a1aa',
+          noteBorderColor: '#fbbf24',
+          noteBkgColor: 'rgba(251,191,36,0.08)',
+          noteTextColor: '#fbbf24',
+          activationBorderColor: 'rgba(255,255,255,0.1)',
+          activationBkgColor: 'rgba(255,255,255,0.02)',
+          sequenceNumberColor: '#0a0a0b',
+        },
+        sequence: {
+          showSequenceNumbers: true,
+          actorMargin: 50,
+          boxMargin: 8,
+          boxTextMargin: 4,
+          messageMargin: 35,
+          mirrorActors: false,
+          useMaxWidth: true,
+          width: 180,
+          height: 50,
+        },
+        fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif',
+      });
+    </script>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

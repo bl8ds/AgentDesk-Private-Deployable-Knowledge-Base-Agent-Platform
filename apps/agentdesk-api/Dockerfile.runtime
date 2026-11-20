@@ -1,0 +1,13 @@
+# Runtime image: linux binaries built on developer machine.
+FROM alpine:3.21
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
+  && apk --no-cache add ca-certificates tzdata curl
+ENV TZ=Asia/Shanghai
+WORKDIR /app
+COPY agentdesk-api agentdesk-migrate ./
+RUN chmod +x /app/agentdesk-api /app/agentdesk-migrate
+COPY migrations ./migrations
+EXPOSE 8080
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -sf http://localhost:8080/health || exit 1
+CMD ["/app/agentdesk-api"]

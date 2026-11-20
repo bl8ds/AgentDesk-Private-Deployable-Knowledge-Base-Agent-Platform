@@ -1,0 +1,1 @@
+ALTER TABLE runtime_ai_settings DROP COLUMN IF EXISTS think_model;

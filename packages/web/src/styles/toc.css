@@ -1,0 +1,206 @@
+/**
+ * 右侧目录导航样式
+ */
+.content-wrapper {
+  max-width: calc(var(--max-content-width) + 220px);
+  margin: 0 auto;
+  display: flex;
+  gap: 0;
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0;
+  max-width: var(--max-content-width);
+  width: 100%;
+  margin: 0;
+  padding: var(--spacing-3xl) var(--spacing-lg) var(--spacing-3xl);
+}
+
+.toc-sidebar {
+  width: 200px;
+  flex-shrink: 0;
+  padding-top: var(--spacing-3xl);
+  padding-bottom: var(--spacing-3xl);
+  position: sticky;
+  top: calc(var(--nav-height) + var(--spacing-xl));
+  align-self: flex-start;
+  max-height: calc(100vh - var(--nav-height) - var(--spacing-2xl));
+  overflow-y: auto;
+}
+
+.toc-sidebar::-webkit-scrollbar {
+  width: 0;
+}
+
+.toc-label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: var(--spacing-md);
+}
+
+.toc-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.toc-item {
+  display: block;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
+  text-decoration: none;
+  padding: 5px 0 5px 10px;
+  border-left: 2px solid transparent;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+  line-height: var(--line-height-compact);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.toc-item:hover {
+  color: var(--color-text-secondary);
+}
+
+.toc-item--active {
+  color: var(--color-text-primary);
+  border-left-color: var(--color-accent);
+}
+
+.toc-item--sub {
+  padding-left: 20px;
+  font-size: var(--font-size-xs);
+}
+
+@media (max-width: 1100px) {
+  .toc-sidebar {
+    display: none;
+  }
+
+  .content-wrapper {
+    max-width: 100%;
+  }
+
+  .main-content {
+    max-width: var(--max-content-width);
+    margin: 0 auto;
+  }
+}
+
+/* ========== 移动端浮动目录按钮 ========== */
+.mobile-toc-toggle {
+  display: none;
+  position: fixed;
+  bottom: 5.5rem;
+  right: 1.25rem;
+  z-index: 100;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.mobile-toc-toggle:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+
+/* 移动端目录面板（底部弹出） */
+.mobile-toc-panel {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  max-height: 60vh;
+  overflow-y: auto;
+  background: var(--color-bg-nav-dropdown);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid var(--color-border);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  padding: var(--spacing-lg) var(--spacing-md) calc(var(--spacing-lg) + env(safe-area-inset-bottom, 0px));
+  transform: translateY(100%);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mobile-toc-panel.visible {
+  transform: translateY(0);
+}
+
+.mobile-toc-panel-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 199;
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.mobile-toc-panel-backdrop.visible {
+  opacity: 1;
+}
+
+.mobile-toc-panel .toc-label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: var(--spacing-md);
+  padding: 0 4px;
+}
+
+.mobile-toc-panel .toc-item {
+  display: block;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
+  text-decoration: none;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  border-left: 2px solid transparent;
+  transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease;
+  line-height: var(--line-height-compact);
+  margin-bottom: 2px;
+}
+
+.mobile-toc-panel .toc-item:hover,
+.mobile-toc-panel .toc-item:active {
+  color: var(--color-text-primary);
+  background: var(--color-bg-hover);
+}
+
+.mobile-toc-panel .toc-item--active {
+  color: var(--color-text-primary);
+  border-left-color: var(--color-accent);
+  background: var(--color-bg-active);
+}
+
+.mobile-toc-panel .toc-item--sub {
+  padding-left: 24px;
+  font-size: var(--font-size-xs);
+}
+
+@media (max-width: 1100px) {
+  .mobile-toc-toggle {
+    display: flex;
+  }
+
+  .mobile-toc-panel,
+  .mobile-toc-panel-backdrop {
+    display: block;
+  }
+}

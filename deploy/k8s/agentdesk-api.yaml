@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agentdesk-api
+  namespace: agentdesk
+  labels:
+    app: agentdesk-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: agentdesk-api
+  template:
+    metadata:
+      labels:
+        app: agentdesk-api
+    spec:
+      initContainers:
+        - name: migrate
+          image: agentdesk-api:local
+          imagePullPolicy: IfNotPresent
+          command: ["/app/agentdesk-migrate", "-cmd", "up"]
+          envFrom:
+            - secretRef:
+                name: agentdesk-api-env
+          workingDir: /app
+      containers:
+        - name: agentdesk-api
+          image: agentdesk-api:local
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: http
+          envFrom:
+            - secretRef:
+                name: agentdesk-api-env
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: agentdesk-api
+  namespace: agentdesk
+  labels:
+    app: agentdesk-api
+spec:
+  type: ClusterIP
+  selector:
+    app: agentdesk-api
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: agentdesk-api
+  namespace: agentdesk
+  annotations:
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.certresolver: letsencrypt
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: agentdesk-api.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: agentdesk-api
+                port:
+                  number: 8080

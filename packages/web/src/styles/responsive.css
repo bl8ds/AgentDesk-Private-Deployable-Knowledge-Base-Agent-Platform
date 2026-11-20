@@ -1,0 +1,145 @@
+/**
+ * 响应式样式 - Linear Style
+ * 移动端适配，保持暗色一致性
+ */
+@media (max-width: 768px) {
+  .header-inner {
+    padding: 0 var(--spacing-md);
+  }
+
+  .brand-title {
+    font-size: 0.8125rem;
+  }
+
+  .brand-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .nav-menu {
+    display: none;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .nav-overlay,
+  .nav-dropdown {
+    display: block;
+  }
+
+  .main-content {
+    padding: var(--spacing-xl) var(--spacing-md) var(--spacing-2xl);
+  }
+
+  .document-title {
+    font-size: var(--font-size-2xl);
+  }
+
+  .doc-section-heading {
+    font-size: var(--font-size-lg);
+    margin-top: var(--spacing-xl);
+  }
+
+  /* 卡片在移动端调整 */
+  .doc-card {
+    padding: var(--spacing-md);
+    margin-left: calc(-1 * var(--spacing-md));
+    margin-right: calc(-1 * var(--spacing-md));
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+
+  /* 表格在移动端全宽无圆角 */
+  .doc-table-wrapper {
+    margin-left: calc(-1 * var(--spacing-md));
+    margin-right: calc(-1 * var(--spacing-md));
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+
+  .doc-table-wrapper::after {
+    border-radius: 0;
+  }
+
+  .doc-table thead th,
+  .doc-table tbody td {
+    padding: 8px var(--spacing-sm);
+    font-size: 0.75rem;
+  }
+
+  .doc-table thead th:first-child,
+  .doc-table thead th:last-child {
+    border-radius: 0;
+  }
+
+  /* 代码块移动端适配 */
+  .doc-code-block {
+    margin-left: calc(-1 * var(--spacing-md));
+    margin-right: calc(-1 * var(--spacing-md));
+    padding: var(--spacing-md);
+    font-size: 0.65rem;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --nav-height: 48px;
+  }
+
+  .brand-title {
+    font-size: 0.75rem;
+  }
+
+  .brand-icon {
+    width: 22px;
+    height: 22px;
+    font-size: 0.5625rem;
+  }
+
+  .document-title {
+    font-size: var(--font-size-xl);
+  }
+
+  .main-content {
+    padding: var(--spacing-lg) var(--spacing-sm) var(--spacing-xl);
+  }
+
+  .doc-card {
+    margin-left: calc(-1 * var(--spacing-sm));
+    margin-right: calc(-1 * var(--spacing-sm));
+    padding: var(--spacing-sm);
+  }
+
+  .doc-table-wrapper {
+    margin-left: calc(-1 * var(--spacing-sm));
+    margin-right: calc(-1 * var(--spacing-sm));
+  }
+
+  .doc-code-block {
+    margin-left: calc(-1 * var(--spacing-sm));
+    margin-right: calc(-1 * var(--spacing-sm));
+    padding: var(--spacing-sm);
+    font-size: 0.6rem;
+  }
+
+  .doc-table thead th,
+  .doc-table tbody td {
+    padding: 6px var(--spacing-xs);
+    font-size: 0.6875rem;
+  }
+
+  .mobile-toc-toggle {
+    bottom: 4.5rem;
+    right: 1rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  :root {
+    --max-content-width: 880px;
+  }
+}

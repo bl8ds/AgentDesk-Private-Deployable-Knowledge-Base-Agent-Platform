@@ -1,0 +1,153 @@
+/**
+ * Linear Style 设计令牌
+ * 极简设计：精确排版、克制动效、边框分隔、无阴影
+ * 默认暗色主题，light 主题通过 [data-theme="light"] 覆盖
+ */
+:root {
+  /* === 色彩 === */
+  --color-bg-primary: #0a0a0b;
+  --color-bg-secondary: rgba(255, 255, 255, 0.03);
+  --color-bg-tertiary: rgba(255, 255, 255, 0.05);
+  --color-bg-hover: rgba(255, 255, 255, 0.06);
+  --color-bg-active: rgba(94, 106, 210, 0.12);
+  --color-bg-table-header: rgba(255, 255, 255, 0.04);
+  --color-bg-table-row-alt: rgba(255, 255, 255, 0.02);
+  --color-bg-nav: rgba(10, 10, 11, 0.8);
+  --color-bg-nav-dropdown: rgba(10, 10, 11, 0.95);
+
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #a1a1aa;
+  --color-text-tertiary: #71717a;
+  --color-text-inverse: #0a0a0b;
+
+  --color-accent-start: #5e6ad2;
+  --color-accent-end: #8b5cf6;
+  --color-accent: #5e6ad2;
+  --color-accent-light: #8b5cf6;
+
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-border-light: rgba(255, 255, 255, 0.06);
+  --color-border-subtle: rgba(255, 255, 255, 0.04);
+
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+
+  /* === 高亮色 === */
+  /* 核心强调 - 用于关键词、技术选型名称、优先级标记 */
+  --hl-accent: #c084fc;
+  /* 正面/成功 - 用于推荐方案、优势亮点、完成标记 */
+  --hl-good: #34d399;
+  /* 警告/紧急 - 用于高风险项、硬性截止日期 */
+  --hl-warn: #fbbf24;
+  /* 信息/普通 - 用于补充说明、默认选项 */
+  --hl-info: #93c5fd;
+  /* 结构标签 - 用于分类名、模块名、章节标签（比 accent 克制） */
+  --hl-label: #a78bfa;
+  /* 错误/阻塞 - 用于严重问题、阻塞项 */
+  --hl-error: #f87171;
+  /* 降级/次要 - 用于已废弃、低优先级、辅助文字 */
+  --hl-muted: #94a3b8;
+
+  /* === 高亮色背景（用于 badge、标记块背景、行高亮） === */
+  --hl-accent-bg: rgba(192, 132, 252, 0.12);
+  --hl-good-bg: rgba(52, 211, 153, 0.12);
+  --hl-warn-bg: rgba(251, 191, 36, 0.12);
+  --hl-info-bg: rgba(147, 197, 253, 0.12);
+  --hl-label-bg: rgba(167, 139, 250, 0.10);
+  --hl-error-bg: rgba(248, 113, 113, 0.12);
+  --hl-muted-bg: rgba(148, 163, 184, 0.10);
+
+  /* === 阴影 - Linear 风格不使用阴影 === */
+  --shadow-none: none;
+
+  /* === 排版 - Inter, tracking-tight === */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'SF Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.8125rem;
+  --font-size-base: 0.875rem;
+  --font-size-lg: 1rem;
+  --font-size-xl: 1.125rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.75rem;
+
+  --line-height-base: 1.7;
+  --line-height-heading: 1.3;
+  --line-height-compact: 1.5;
+
+  --letter-spacing-tight: -0.01em;
+  --letter-spacing-normal: 0;
+
+  /* === 间距 === */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.25rem;
+  --spacing-xl: 1.5rem;
+  --spacing-2xl: 2rem;
+  --spacing-3xl: 3rem;
+
+  /* === 圆角 - 最大 rounded-lg (8px) === */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  /* === 过渡 - 使用 opacity 变化 === */
+  --transition-fast: 150ms ease;
+  --transition-base: 200ms ease;
+
+  /* === 布局 === */
+  --nav-height: 56px;
+  --max-content-width: 880px;
+
+  /* === 渐变 === */
+  --gradient-accent: linear-gradient(
+    135deg,
+    var(--color-accent-start),
+    var(--color-accent-end)
+  );
+}
+
+/* === Light 主题 === */
+[data-theme="light"] {
+  --color-bg-primary: #f8f9fa;
+  --color-bg-secondary: rgba(0, 0, 0, 0.02);
+  --color-bg-tertiary: rgba(0, 0, 0, 0.04);
+  --color-bg-hover: rgba(0, 0, 0, 0.04);
+  --color-bg-active: rgba(94, 106, 210, 0.08);
+  --color-bg-table-header: rgba(0, 0, 0, 0.03);
+  --color-bg-table-row-alt: rgba(0, 0, 0, 0.015);
+  --color-bg-nav: rgba(248, 249, 250, 0.85);
+  --color-bg-nav-dropdown: rgba(255, 255, 255, 0.95);
+
+  --color-text-primary: #1a1a2e;
+  --color-text-secondary: #52525b;
+  --color-text-tertiary: #71717a;
+  --color-text-inverse: #ffffff;
+
+  --color-border: rgba(0, 0, 0, 0.1);
+  --color-border-light: rgba(0, 0, 0, 0.06);
+  --color-border-subtle: rgba(0, 0, 0, 0.04);
+
+  /* 亮色主题高亮色 - 相对暗色统一提深以保持对比度 */
+  --hl-accent: #7c3aed;
+  --hl-good: #059669;
+  --hl-warn: #d97706;
+  --hl-info: #3b82f6;
+  --hl-label: #8b5cf6;
+  --hl-error: #ef4444;
+  --hl-muted: #64748b;
+
+  /* 亮色主题高亮色背景 */
+  --hl-accent-bg: rgba(124, 58, 237, 0.10);
+  --hl-good-bg: rgba(5, 150, 105, 0.10);
+  --hl-warn-bg: rgba(217, 119, 6, 0.10);
+  --hl-info-bg: rgba(59, 130, 246, 0.10);
+  --hl-label-bg: rgba(139, 92, 246, 0.08);
+  --hl-error-bg: rgba(239, 68, 68, 0.10);
+  --hl-muted-bg: rgba(100, 116, 139, 0.08);
+
+}

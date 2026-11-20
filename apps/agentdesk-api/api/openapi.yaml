@@ -1,0 +1,447 @@
+openapi: 3.0.3
+info:
+  title: agentdesk-api
+  description: AgentDesk Agent 业务后端（鉴权会话、知识库、对话 SSE、审计）
+  version: 0.1.0
+servers:
+  - url: http://localhost:8080
+    description: local
+tags:
+  - name: health
+  - name: auth
+  - name: docs
+  - name: chat
+  - name: audit
+paths:
+  /health:
+    get:
+      tags: [health]
+      summary: Liveness
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessEnvelope"
+  /ready:
+    get:
+      tags: [health]
+      summary: Readiness (DB ping)
+      responses:
+        "200":
+          description: Ready
+        "503":
+          description: DB down
+  /api/v1/auth/app-code:
+    post:
+      tags: [auth]
+      summary: AgentDesk App 服务端领取一次性码
+      parameters:
+        - in: header
+          name: X-App-Credential
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [sub]
+              properties:
+                sub:
+                  type: string
+                level:
+                  type: string
+                  enum: [free, vip, svip]
+                  default: free
+      responses:
+        "200":
+          description: code issued (TTL ≤ 5min)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessEnvelope"
+        "401":
+          $ref: "#/components/responses/Problem"
+  /api/v1/auth/exchange:
+    post:
+      tags: [auth]
+      summary: 用一次性码换 Session Cookie
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [code]
+              properties:
+                code:
+                  type: string
+      responses:
+        "200":
+          description: Session cookie set
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessEnvelope"
+        "401":
+          $ref: "#/components/responses/Problem"
+  /api/v1/auth/me:
+    get:
+      tags: [auth]
+      summary: 当前主体
+      security:
+        - SessionCookie: []
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Principal
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessEnvelope"
+        "401":
+          $ref: "#/components/responses/Problem"
+  /api/v1/docs:
+    get:
+      tags: [docs]
+      summary: 文档列表
+      security:
+        - SessionCookie: []
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer, default: 1 }
+        - in: query
+          name: page_size
+          schema: { type: integer, default: 20 }
+      responses:
+        "200":
+          description: List
+    post:
+      tags: [docs]
+      summary: 上传文档（pdf/docx/txt/md/图片）
+      security:
+        - SessionCookie: []
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "201":
+          description: Created (async processing; images go through vision extract)
+        "400":
+          $ref: "#/components/responses/Problem"
+  /api/v1/docs/{id}:
+    get:
+      tags: [docs]
+      summary: 文档详情
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Document
+        "404":
+          $ref: "#/components/responses/Problem"
+    delete:
+      tags: [docs]
+      summary: 软删除文档（下线向量与源文件；历史引用快照保留）
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Deleted
+        "404":
+          $ref: "#/components/responses/Problem"
+  /api/v1/docs/{id}/reprocess:
+    post:
+      tags: [docs]
+      summary: 重新处理失败或已入库文档
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Reprocess queued
+  /api/v1/docs/{id}/content:
+    get:
+      tags: [docs]
+      summary: 源文件预览流
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Binary content
+  /api/v1/admin/ai-settings:
+    get:
+      tags: [admin]
+      summary: 读取 AI 运行时配置（密钥仅返回是否已配置）
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Settings
+    put:
+      tags: [admin]
+      summary: 更新 AI 运行时配置（密钥 AES-GCM 加密落库；唯一配置源）
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Updated
+  /api/v1/chat/completions:
+    post:
+      tags: [chat]
+      summary: 对话（SSE，代理 agentdesk-agent）
+      security:
+        - SessionCookie: []
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [message]
+              properties:
+                message:
+                  type: string
+                conversation_id:
+                  type: string
+                think:
+                  type: boolean
+                  description: 使用思考模型；若上游输出 reasoning 则 SSE event:reasoning
+      responses:
+        "200":
+          description: |
+            text/event-stream；events: token | reasoning | citation | usage | done | error
+            resource_id 始终取自 JWT.sub，客户端不可覆盖
+          content:
+            text/event-stream:
+              schema:
+                type: string
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+  /api/v1/chat/threads:
+    get:
+      tags: [chat]
+      summary: 当前用户对话列表
+      security:
+        - SessionCookie: []
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Thread list
+        "401":
+          $ref: "#/components/responses/Problem"
+  /api/v1/chat/threads/{id}:
+    patch:
+      tags: [chat]
+      summary: 重命名对话标题
+      security:
+        - SessionCookie: []
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title]
+              properties:
+                title: { type: string }
+      responses:
+        "200":
+          description: Updated thread
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /api/v1/chat/threads/{id}/messages:
+    get:
+      tags: [chat]
+      summary: 拉取对话消息
+      security:
+        - SessionCookie: []
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Messages
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+  /api/v1/me/quota:
+    get:
+      tags: [quota]
+      summary: 当前用户本月配额与用量
+      security:
+        - SessionCookie: []
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Quota status
+  /api/v1/admin/quotas:
+    get:
+      tags: [quota]
+      summary: 列出已配置用户配额（admin）
+      security:
+        - SessionCookie: []
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Quota list
+        "403":
+          $ref: "#/components/responses/Problem"
+  /api/v1/admin/quotas/{userId}:
+    get:
+      tags: [quota]
+      summary: 查询用户配额（admin）
+      security:
+        - SessionCookie: []
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Quota detail
+    put:
+      tags: [quota]
+      summary: 设置用户月度 token 配额（admin）
+      security:
+        - SessionCookie: []
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token_limit]
+              properties:
+                token_limit: { type: integer, format: int64 }
+                note: { type: string }
+      responses:
+        "200":
+          description: Upserted
+        "403":
+          $ref: "#/components/responses/Problem"
+  /api/v1/audit:
+    get:
+      tags: [audit]
+      summary: 审计日志（admin）
+      security:
+        - SessionCookie: []
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer, default: 1 }
+        - in: query
+          name: page_size
+          schema: { type: integer, default: 20 }
+      responses:
+        "200":
+          description: Audit list
+        "403":
+          $ref: "#/components/responses/Problem"
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    SessionCookie:
+      type: apiKey
+      in: cookie
+      name: agentdesk_session
+  responses:
+    Problem:
+      description: RFC 7807 Problem Details
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetail"
+  schemas:
+    SuccessEnvelope:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          example: true
+        data: {}
+    ProblemDetail:
+      type: object
+      properties:
+        type: { type: string }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        instance: { type: string }
+        code: { type: string }

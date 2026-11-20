@@ -1,0 +1,17 @@
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+bin/
+.env
+.idea/
+.vscode/
+data/uploads/*
+!data/uploads/.gitkeep
+agentdesk-api
+agentdesk-migrate
+app
+migrate

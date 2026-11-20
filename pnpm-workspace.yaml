@@ -1,0 +1,6 @@
+packages:
+  - 'packages/*'
+  - 'apps/agentdesk-chat'
+  - 'apps/agentdesk-admin'
+allowBuilds:
+  esbuild: true

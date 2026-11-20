@@ -1,0 +1,43 @@
+# Reach host Docker Postgres/Redis from k3s via Endpoints (IP, not ExternalName).
+# Set the Node/host IP that publishes :5432 and :6379 (e.g. 10.0.0.9).
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-ext
+  namespace: agentdesk
+spec:
+  ports:
+    - port: 5432
+      targetPort: 5432
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: postgres-ext
+  namespace: agentdesk
+subsets:
+  - addresses:
+      - ip: 10.0.0.9
+    ports:
+      - port: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-ext
+  namespace: agentdesk
+spec:
+  ports:
+    - port: 6379
+      targetPort: 6379
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: redis-ext
+  namespace: agentdesk
+subsets:
+  - addresses:
+      - ip: 10.0.0.9
+    ports:
+      - port: 6379

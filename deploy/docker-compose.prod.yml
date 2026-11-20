@@ -1,0 +1,113 @@
+# agentdesk PROD/演示套（与开发套并行，同机 agentdesk-network）
+# 用法：docker compose -f docker-compose.prod.yml --env-file .env.prod up -d
+# 库：agentdesk_prod；bucket：agentdesk-prod（S3 禁止下划线）；Redis DB=3
+# Traefik：websecure + LE（45 上 :80 全局 308→https，桥必须走 :443）
+
+services:
+  agentdesk-prod-api:
+    build:
+      context: ../apps/agentdesk-api
+      dockerfile: Dockerfile.runtime
+    image: agentdesk-api:prod
+    container_name: agentdesk-prod-api
+    env_file:
+      - ./agentdesk-prod-api.env
+    environment:
+      APP_PORT: "8080"
+      AUTH_MODE: jwks
+      AGENT_BASE_URL: http://agentdesk-prod-agent:4111
+      DB_NAME: agentdesk_prod
+      REDIS_DB: "3"
+      S3_BUCKET: agentdesk-prod
+    expose:
+      - "8080"
+    depends_on:
+      agentdesk-prod-agent:
+        condition: service_healthy
+    restart: unless-stopped
+    mem_limit: 256m
+    command: ["/bin/sh", "-c", "/app/agentdesk-migrate -cmd up && exec /app/agentdesk-api"]
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=agentdesk-network
+      - traefik.http.routers.agentdesk-prod-api.rule=Host(`${AGENTDESK_PROD_API_HOST}`)
+      - traefik.http.routers.agentdesk-prod-api.entrypoints=websecure
+      - traefik.http.routers.agentdesk-prod-api.tls=true
+      - traefik.http.routers.agentdesk-prod-api.tls.certresolver=letencrypt
+      - traefik.http.routers.agentdesk-prod-api.service=agentdesk-prod-api
+      - traefik.http.services.agentdesk-prod-api.loadbalancer.server.port=8080
+
+  agentdesk-prod-agent:
+    build:
+      context: ../apps/agentdesk-agent
+      dockerfile: Dockerfile.runtime
+    image: agentdesk-agent:prod
+    container_name: agentdesk-prod-agent
+    env_file:
+      - ./agentdesk-prod-agent.env
+    environment:
+      PORT: "4111"
+      HOST: "0.0.0.0"
+    expose:
+      - "4111"
+    restart: unless-stopped
+    mem_limit: 1536m
+    labels:
+      - traefik.enable=false
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:4111/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  agentdesk-prod-admin:
+    build:
+      context: ../apps/agentdesk-admin
+      dockerfile: Dockerfile.runtime
+    image: agentdesk-admin:prod
+    container_name: agentdesk-prod-admin
+    expose:
+      - "80"
+    restart: unless-stopped
+    mem_limit: 64m
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=agentdesk-network
+      - traefik.http.routers.agentdesk-prod-admin.rule=Host(`${AGENTDESK_PROD_ADMIN_HOST}`)
+      - traefik.http.routers.agentdesk-prod-admin.entrypoints=websecure
+      - traefik.http.routers.agentdesk-prod-admin.tls=true
+      - traefik.http.routers.agentdesk-prod-admin.tls.certresolver=letencrypt
+      - traefik.http.routers.agentdesk-prod-admin.service=agentdesk-prod-admin
+      - traefik.http.services.agentdesk-prod-admin.loadbalancer.server.port=80
+
+  agentdesk-prod-chat:
+    build:
+      context: ../apps/agentdesk-chat
+      dockerfile: Dockerfile.runtime
+    image: agentdesk-chat:prod
+    container_name: agentdesk-prod-chat
+    expose:
+      - "80"
+    restart: unless-stopped
+    mem_limit: 64m
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=agentdesk-network
+      - traefik.http.routers.agentdesk-prod-chat.rule=Host(`${AGENTDESK_PROD_CHAT_HOST}`)
+      - traefik.http.routers.agentdesk-prod-chat.entrypoints=websecure
+      - traefik.http.routers.agentdesk-prod-chat.tls=true
+      - traefik.http.routers.agentdesk-prod-chat.tls.certresolver=letencrypt
+      - traefik.http.routers.agentdesk-prod-chat.service=agentdesk-prod-chat
+      - traefik.http.services.agentdesk-prod-chat.loadbalancer.server.port=80
+
+networks:
+  default:
+    name: agentdesk-network
+    external: true

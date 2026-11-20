@@ -1,0 +1,10 @@
+/node_modules
+npm-debug.log
+.env
+.git
+.mastra/.build
+.mastra/build-manifest.json
+.mastra/bundler-config.mjs
+/dist
+*.md
+/src

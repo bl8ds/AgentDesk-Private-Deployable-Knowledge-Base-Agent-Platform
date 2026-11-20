@@ -1,0 +1,7 @@
+# Namespace for agentdesk AI Agent (dev on k3s)
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: agentdesk
+  labels:
+    app.kubernetes.io/part-of: agentdesk

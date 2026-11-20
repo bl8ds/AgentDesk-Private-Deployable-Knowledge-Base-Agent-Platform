@@ -1,0 +1,130 @@
+/**
+ * 表格样式 - Linear Style
+ * 边框分隔、无阴影、渐变高亮行
+ */
+.doc-table-wrapper {
+  overflow-x: auto;
+  margin-bottom: var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background-color: transparent;
+  /* 滚动渐变遮罩背景（通过伪元素实现） */
+  position: relative;
+}
+
+/* 表格横向滚动右侧渐变遮罩指示器 */
+.doc-table-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 24px;
+  background: linear-gradient(to right, transparent, var(--color-bg-primary));
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 150ms ease;
+  z-index: 1;
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+}
+
+/* 当表格可横向滚动时显示右侧渐变 */
+.doc-table-wrapper.is-scrollable::after {
+  opacity: 1;
+}
+
+/* 滚动到底部时隐藏渐变（已无更多内容） */
+.doc-table-wrapper.is-scrolled-end::after {
+  opacity: 0;
+}
+
+.doc-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-compact);
+  min-width: 100%;
+}
+
+/* 表头 */
+.doc-table thead th {
+  position: sticky;
+  top: 0;
+  background-color: var(--color-bg-table-header);
+  color: var(--color-text-tertiary);
+  font-weight: 500;
+  font-size: var(--font-size-xs);
+  text-transform: none;
+  letter-spacing: var(--letter-spacing-normal);
+  padding: 10px var(--spacing-md);
+  text-align: left;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--color-border);
+  user-select: none;
+}
+
+.doc-table thead th:first-child {
+  border-top-left-radius: var(--radius-lg);
+}
+
+.doc-table thead th:last-child {
+  border-top-right-radius: var(--radius-lg);
+}
+
+/* 表体 */
+.doc-table tbody td {
+  padding: 10px var(--spacing-md);
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-border-subtle);
+  vertical-align: middle;
+}
+
+.doc-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* 隔行微妙区分 */
+.doc-table tbody tr:nth-child(even) {
+  background-color: var(--color-bg-table-row-alt);
+}
+
+/* 行悬停效果 - opacity 过渡 */
+.doc-table tbody tr {
+  transition: background-color var(--transition-fast);
+}
+
+.doc-table tbody tr:hover {
+  background-color: var(--color-bg-hover);
+}
+
+/* 数字列等宽字体 */
+.doc-table td.num,
+.doc-table .col-number {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 汇总行 */
+.doc-table tbody tr.summary-row {
+  background-color: var(--color-bg-tertiary);
+  font-weight: 500;
+}
+
+.doc-table tbody tr.summary-row td {
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+}
+
+/* 固定表头 */
+.doc-table-wrapper.fixed-header {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.doc-table-wrapper.fixed-header .doc-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}

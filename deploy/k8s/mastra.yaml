@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mastra
+  namespace: agentdesk
+  labels:
+    app: mastra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mastra
+  template:
+    metadata:
+      labels:
+        app: mastra
+    spec:
+      containers:
+        - name: mastra
+          image: agentdesk-mastra:local
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 4111
+              name: http
+          envFrom:
+            - secretRef:
+                name: agentdesk-mastra-env
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mastra
+  namespace: agentdesk
+  labels:
+    app: mastra
+spec:
+  type: ClusterIP
+  selector:
+    app: mastra
+  ports:
+    - name: http
+      port: 4111
+      targetPort: http

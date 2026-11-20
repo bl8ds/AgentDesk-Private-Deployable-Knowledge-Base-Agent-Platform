@@ -1,0 +1,398 @@
+/**
+ * 主内容区样式 - Linear Style
+ * 精确排版、克制间距、tracking-tight 标题
+ */
+.main-content {
+  flex: 1;
+  max-width: var(--max-content-width);
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--spacing-3xl) var(--spacing-lg) var(--spacing-3xl);
+}
+
+/* 文档容器 - 使用 opacity 动画而非 transform */
+.document-container {
+  animation: fadeIn var(--transition-base) ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 文档标题 - tracking-tight, semibold */
+.document-title {
+  font-size: var(--font-size-3xl);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-2xl);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border);
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: var(--line-height-heading);
+}
+
+/* ========== 汇总卡片网格 ========== */
+.doc-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-2xl);
+}
+
+.doc-summary-card {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.doc-summary-card:hover {
+  border-color: var(--color-border-light);
+  background: var(--color-bg-tertiary);
+}
+
+.doc-summary-card-label {
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--spacing-sm);
+}
+
+.doc-summary-card-value {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  line-height: var(--line-height-heading);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+/* 响应式：小屏幕改为两列 */
+@media (max-width: 640px) {
+  .doc-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 极窄屏幕改为单列 */
+@media (max-width: 420px) {
+  .doc-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========== 卡片容器 - 卡片化处理 ========== */
+.doc-card {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl) var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.doc-card:hover {
+  border-color: var(--color-border-light);
+}
+
+/* ========== 双列实体卡片（使用方 / 平台方等） ========== */
+.doc-dual-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-2xl);
+}
+
+.doc-entity-card {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.doc-entity-card:hover {
+  border-color: var(--color-border-light);
+  background: var(--color-bg-tertiary);
+}
+
+.doc-entity-card-title {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-border);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.doc-entity-card .doc-table-wrapper {
+  margin-bottom: 0;
+}
+
+.doc-entity-card .doc-table {
+  margin-bottom: 0;
+}
+
+/* 响应式：小屏幕改为单列 */
+@media (max-width: 640px) {
+  .doc-dual-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 卡片内的首个标题 margin-top 归零 */
+.doc-card .doc-section-heading:first-child {
+  margin-top: 0;
+}
+
+/* 卡片内最后一个元素 margin-bottom 归零 */
+.doc-card > :last-child {
+  margin-bottom: 0;
+}
+
+/* 独立 paragraphs / lists 在非卡片内时保持原有间距 */
+.doc-standalone {
+  margin-bottom: var(--spacing-md);
+}
+
+/* 章节标题 */
+.doc-section-heading {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-top: var(--spacing-2xl);
+  margin-bottom: var(--spacing-md);
+  line-height: var(--line-height-heading);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.doc-section-subheading {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-top: var(--spacing-xl);
+  margin-bottom: var(--spacing-sm);
+  line-height: var(--line-height-heading);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+/* 段落 */
+.doc-paragraph {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-md);
+  max-width: 100%;
+  letter-spacing: var(--letter-spacing-normal);
+}
+
+/* 列表 */
+.doc-list {
+  margin-bottom: var(--spacing-md);
+  padding-left: var(--spacing-xl);
+  color: var(--color-text-secondary);
+}
+
+.doc-list.ordered {
+  list-style-type: decimal;
+}
+
+.doc-list.unordered {
+  list-style-type: disc;
+}
+
+.doc-list-item {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-xs);
+  padding-left: 2px;
+}
+
+.doc-list-item::marker {
+  color: var(--color-text-tertiary);
+}
+
+/* ========== 高亮色系统 ========== */
+/*
+ * 7 色语义体系，覆盖完整信息层级
+ * 每种颜色提供文字色 + 背景色，满足内联高亮 / badge / 行标记等场景
+ *
+ * 语义对照：
+ *   accent = 核心强调（关键词、技术选型、首选项）
+ *   good   = 正面/成功（推荐方案、优势、完成）
+ *   warn   = 警告/紧急（高风险、硬性截止、需关注）
+ *   info   = 信息/普通（补充说明、默认选项）
+ *   label  = 结构标签（分类名、模块名，比 accent 克制）
+ *   error  = 错误/阻塞（严重问题、阻塞项）
+ *   muted  = 降级/次要（已废弃、低优先级、辅助说明）
+ */
+
+/* ---- 内联文字高亮 ---- */
+.hl-accent {
+  color: var(--hl-accent);
+  font-weight: 500;
+}
+
+.hl-good {
+  color: var(--hl-good);
+  font-weight: 500;
+}
+
+.hl-warn {
+  color: var(--hl-warn);
+  font-weight: 500;
+}
+
+.hl-info {
+  color: var(--hl-info);
+}
+
+.hl-label {
+  color: var(--hl-label);
+  font-weight: 500;
+}
+
+.hl-error {
+  color: var(--hl-error);
+  font-weight: 500;
+}
+
+.hl-muted {
+  color: var(--hl-muted);
+}
+
+/* ---- Badge 标签样式（背景色 + 文字色） ---- */
+.hl-badge {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.hl-badge-accent {
+  color: var(--hl-accent);
+  background: var(--hl-accent-bg);
+}
+
+.hl-badge-good {
+  color: var(--hl-good);
+  background: var(--hl-good-bg);
+}
+
+.hl-badge-warn {
+  color: var(--hl-warn);
+  background: var(--hl-warn-bg);
+}
+
+.hl-badge-info {
+  color: var(--hl-info);
+  background: var(--hl-info-bg);
+}
+
+.hl-badge-label {
+  color: var(--hl-label);
+  background: var(--hl-label-bg);
+}
+
+.hl-badge-error {
+  color: var(--hl-error);
+  background: var(--hl-error-bg);
+}
+
+.hl-badge-muted {
+  color: var(--hl-muted);
+  background: var(--hl-muted-bg);
+}
+
+/* ---- 行级背景高亮（用于表格行 / 段落块标记） ---- */
+.hl-bg-accent { background: var(--hl-accent-bg); }
+.hl-bg-good   { background: var(--hl-good-bg); }
+.hl-bg-warn   { background: var(--hl-warn-bg); }
+.hl-bg-info   { background: var(--hl-info-bg); }
+.hl-bg-label  { background: var(--hl-label-bg); }
+.hl-bg-error  { background: var(--hl-error-bg); }
+.hl-bg-muted  { background: var(--hl-muted-bg); }
+
+/* ---- 左侧色条标记（用于卡片/段落左侧强调线） ---- */
+.hl-border-accent { border-left: 2px solid var(--hl-accent); padding-left: 10px; }
+.hl-border-good   { border-left: 2px solid var(--hl-good);   padding-left: 10px; }
+.hl-border-warn   { border-left: 2px solid var(--hl-warn);   padding-left: 10px; }
+.hl-border-error  { border-left: 2px solid var(--hl-error);  padding-left: 10px; }
+
+/* 内容块间距 */
+.content-block {
+  margin-bottom: var(--spacing-lg);
+}
+
+/* ========== 代码/架构图块 ========== */
+.doc-code-block {
+  display: block;
+  overflow-x: auto;
+  white-space: pre;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: #a78bfa;
+  line-height: 1.5;
+  padding: var(--spacing-md) 0;
+  -webkit-overflow-scrolling: touch;
+  /* 移动端滚动渐变提示在 responsive.css 中定义 */
+}
+
+/* 移动端文字大小优化 */
+@media (max-width: 768px) {
+  .doc-paragraph {
+    font-size: 0.9375rem;
+  }
+  .doc-list-item {
+    font-size: 0.9375rem;
+  }
+}
+
+/* ========== Mermaid 泳道图 ========== */
+.doc-mermaid {
+  margin: var(--spacing-md) 0 var(--spacing-xl);
+  padding: var(--spacing-lg);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  transition: border-color var(--transition-fast);
+}
+
+.doc-mermaid:hover {
+  border-color: var(--color-border-light);
+}
+
+.doc-mermaid svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+.doc-mermaid .messageText,
+.doc-mermaid .actor {
+  font-family: var(--font-family) !important;
+}
+
+/* 暗色主题下 Mermaid 适配 */
+:root .doc-mermaid svg {
+  background: transparent;
+}
+
+/* 亮色主题下 Mermaid 适配 */
+[data-theme="light"] .doc-mermaid svg {
+  background: transparent;
+}
