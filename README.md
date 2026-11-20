@@ -41,6 +41,8 @@ AgentDesk is positioned as a **general-purpose knowledge base Agent platform, no
 
 ## UI & Theming
 
+![AgentDesk admin console and mobile chat](./docs/promo/ad-ui-stack-en.png)
+
 Both frontends use a unified blue theme based on shadcn/ui semantic color variables (`--primary`, `--ring`, `--sidebar-*`, etc.). Changing the theme only requires adjusting one place in the CSS variables to take effect globally.
 
 | Interface | Entry | Notes |
@@ -85,6 +87,12 @@ agentdesk-chat / agentdesk-admin
         └── agentdesk-agent (internal network only)
                  └── OpenAI-compatible LLM / Embedding / Vision
 ```
+
+![AgentDesk deployment architecture](./docs/promo/ad-pro-architecture-en.png)
+
+The swimlane below traces a complete RAG Q&A request — input safety check, vector retrieval, no-basis refusal, tool calling, streaming redaction, and audit — across the user, Chat UI, API, content safety, Agent, PostgreSQL, and external model lanes.
+
+![RAG Q&A request swimlane](./docs/promo/ad-swimlane-en.png)
 
 Design constraints:
 

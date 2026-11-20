@@ -41,6 +41,8 @@ AgentDesk 的定位是**通用知识库 Agent 平台，不绑定任何单一行�
 
 ## 界面与主题
 
+![AgentDesk 运营后台与移动端对话界面](./docs/promo/ad-ui-stack.png)
+
 两套前端界面均使用统一的蓝色主题，视觉基于 shadcn/ui 的语义色变量（`--primary`、`--ring`、`--sidebar-*` 等），改主题只需调整一处 CSS 变量即可全局生效。
 
 | 界面 | 入口 | 说明 |
@@ -85,6 +87,12 @@ agentdesk-chat / agentdesk-admin
         └── agentdesk-agent（仅内网）
                  └── OpenAI 兼容 LLM / Embedding / Vision
 ```
+
+![AgentDesk 部署架构](./docs/promo/ad-pro-architecture.png)
+
+下图沿用户、对话端、API、内容安全、Agent、PostgreSQL、外部模型七条泳道，追踪一次完整 RAG 问答请求——输入安全检测、向量检索、无依据拒答、工具调用、流式脱敏与审计。
+
+![RAG 问答请求链路泳道图](./docs/promo/ad-swimlane.png)
 
 设计约束：
 
